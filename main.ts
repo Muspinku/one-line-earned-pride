@@ -1,39 +1,59 @@
-// one-line-earned-pride - make.fun entry for u-mang-one-line-of-earned-pride-a0138557.
-// Node 22, standard library only. Writes the single entry line to
-// /output/entry.txt (or $MAKEFUN_OUTPUT_DIR/entry.txt when set).
-// The entry is a fixed string: the program is deterministic and writes
-// exactly this text, no trailing newline, so the gate sees 1-240
-// characters of UTF-8 and nothing else.
+// one-line-earned-pride — make.fun entry for
+// u-mang-one-line-of-earned-pride-a0138557.
+// A Node 22 program, standard library only. It writes one line to
+// entry.txt in the output directory and then proves the file it wrote
+// is byte-for-byte the line below.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-// The entry: a grandfather who left school at twelve finally reads his
-// granddaughter a bedtime story — a long, quiet effort landing in one
-// small, ordinary moment. The finger under every word is the tell: he
-// is still working at it. The landing is her asking for the same story
-// tomorrow — proof his reading was good enough.
-const ENTRY = "My grandfather left school at twelve. Tonight he read my daughter her bedtime story — slowly, finger under every word — and when he finished, she asked for the same one tomorrow.";
+// The line itself. A grandfather who left school at twelve finally
+// reads his granddaughter a bedtime story — a long, quiet effort
+// landing in one small, ordinary moment. The finger under every word
+// is the tell: he is still working at it. The landing is her asking
+// for the same story tomorrow — proof his reading was good enough.
+const ENTRY =
+  'My grandfather left school at twelve. Tonight he read my daughter her bedtime story — slowly, finger under every word — and when he finished, she asked for the same one tomorrow.';
 
-// Guard the gate: the entry must stay inside its character cap and stay
-// a single line, since the judge reads exactly one line.
-if (ENTRY.length < 1 || ENTRY.length > 240 || !ENTRY.trim() || ENTRY.includes('\n')) {
-  throw new Error(`entry is ${ENTRY.length} characters, cap is 240`);
+// The gate for this bounty: one line, 1 to 240 characters of UTF-8,
+// no trailing newline, nothing else in the file.
+const MAX_CHARS = 240;
+
+function fail(message) {
+  throw new Error(message);
 }
 
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-mkdirSync(outDir, { recursive: true });
-const target = join(outDir, 'entry.txt');
+function checkEntry(text) {
+  if (typeof text !== 'string' || text.length < 1) fail('entry is empty');
+  if (text.length > MAX_CHARS) {
+    fail(`entry is ${text.length} characters, cap is ${MAX_CHARS}`);
+  }
+  if (!text.trim()) fail('entry is only whitespace');
+  if (text.includes('\n')) fail('entry must stay on one line');
+}
+
+function resolveTarget() {
+  const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+  mkdirSync(outDir, { recursive: true });
+  return join(outDir, 'entry.txt');
+}
+
+function verifyEntry(target, text) {
+  const written = readFileSync(target);
+  const expected = Buffer.byteLength(text, 'utf8');
+  if (written.length !== expected) {
+    fail(`entry.txt is ${written.length} bytes, expected ${expected}`);
+  }
+  if (written.length > 0 && written[written.length - 1] === 0x0a) {
+    fail('entry.txt ends with a newline');
+  }
+  if (written.toString('utf8') !== text) {
+    fail('entry.txt does not match ENTRY after writing');
+  }
+  return written.length;
+}
+
+checkEntry(ENTRY);
+const target = resolveTarget();
 writeFileSync(target, ENTRY, 'utf8');
-
-// Verify the write round-trips byte for byte: what the grader reads
-// must be exactly the entry above, with nothing appended or lost.
-// Check raw bytes, not just the string: the file must be a single line
-// with no trailing newline, and its byte length must match the entry.
-const written = readFileSync(target);
-if (written.length !== Buffer.byteLength(ENTRY, 'utf8') || written[written.length - 1] === 0x0a) {
-  throw new Error('entry.txt has unexpected bytes (trailing newline or length mismatch)');
-}
-if (written.toString('utf8') !== ENTRY) {
-  throw new Error('entry.txt does not match ENTRY after writing');
-}
-console.log(`wrote entry.txt: ${ENTRY.length} characters, ${written.length} bytes`);
+const bytes = verifyEntry(target, ENTRY);
+console.log(`wrote entry.txt: ${ENTRY.length} characters, ${bytes} bytes`);
