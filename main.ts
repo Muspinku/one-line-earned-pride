@@ -56,4 +56,5 @@ checkEntry(ENTRY);
 const target = resolveTarget();
 writeFileSync(target, ENTRY, 'utf8');
 const bytes = verifyEntry(target, ENTRY);
-console.log(`wrote entry.txt: ${ENTRY.length} characters, ${bytes} bytes`);
+if (bytes === 0) fail('entry.txt is empty after writing');
+console.log(`wrote ${target}: ${ENTRY.length} characters, ${bytes} bytes`);
