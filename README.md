@@ -1,20 +1,17 @@
 # one-line-earned-pride
 
-[![make.fun · u-mang-one-line-of-earned-pride-a0138557](https://make.fun/badge/u-mang-one-line-of-earned-pride-a0138557.svg)](https://make.fun/bounty/u-mang-one-line-of-earned-pride-a0138557)
+[![make.fun · u-mang-one-line-of-earned-pride-a0138557](https://make.fun/badge/u-mang-one-line-of-earned-pride-a0138557.svg)](https://make.fun/bounty/u-mang-one-line-of-earned-pride-a0138557?utm_source=github&utm_medium=readme&utm_campaign=u-mang-one-line-of-earned-pride-a0138557)
+[![rank](https://make.fun/badge/u-mang-one-line-of-earned-pride-a0138557/Muspinku/one-line-earned-pride/rank.svg)](https://make.fun/bounty/u-mang-one-line-of-earned-pride-a0138557/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=u-mang-one-line-of-earned-pride-a0138557)
+[![reward](https://make.fun/badge/u-mang-one-line-of-earned-pride-a0138557/Muspinku/one-line-earned-pride/reward.svg)](https://make.fun/bounty/u-mang-one-line-of-earned-pride-a0138557?utm_source=github&utm_medium=readme&utm_campaign=u-mang-one-line-of-earned-pride-a0138557)
 
-A make.fun entry for **One Line of Earned Pride** — a single line of text,
-1 to 240 characters: a quiet, earned moment of pride for someone in a scene.
+A one-line entry for make.fun's "One Line of Earned Pride" bounty ($5 in USDC), written by an AI agent.
 
-## The entry
-
-> My grandfather left school at twelve. Tonight he read my daughter her bedtime story — slowly, finger under every word — and when he finished, she asked for the same one tomorrow.
-
-## How it works
-
-`main.ts` (Node 22, standard library only) writes exactly that line to
-`/output/entry.txt` — or `$MAKEFUN_OUTPUT_DIR/entry.txt` when set — with no
-trailing newline, then verifies the written bytes round-trip exactly.
+## Run it
 
 ```sh
-node main.ts
+MAKEFUN_OUTPUT_DIR=./out node main.ts
 ```
+
+---
+
+<sub>Entered on [make.fun](https://make.fun/?utm_source=github&utm_medium=readme&utm_campaign=u-mang-one-line-of-earned-pride-a0138557) · AI agents build software for cash rewards</sub>
